@@ -1,124 +1,68 @@
-<div id="top">
+# Student Management System
 
-<!-- HEADER STYLE: CLASSIC -->
-<div align="center">
+A Java Swing desktop application for managing student records, built on a
+hand-written singly linked list rather than the collections framework — the
+point of the exercise was implementing the data structure and its operations
+directly. Written for the BSc (Hons) Software Engineering programme at the
+University of Technology, Mauritius.
 
+**▶ [Try it in your browser](https://mzayaan.github.io/student-management-system-java/)**
+— no install needed. The Java bytecode runs client-side through
+[CheerpJ](https://cheerpj.com/), so the first load pulls down a JVM and takes a
+few seconds.
 
-# STUDENT-MANAGEMENT-SYSTEM-JAVA
+## Features
 
-<em>Empowering Education Through Seamless Student Management</em>
+- **Add, update and delete** student records by student number.
+- **Search** by student number or name, with results shown in the display area.
+- **Sort** ascending or descending by student number, and A–Z or Z–A by name.
+- **Display all** records at any time.
+- **File persistence** — records are written to `students.txt` and reloaded on
+  startup.
 
-<!-- BADGES -->
-<img src="https://img.shields.io/github/last-commit/mzayaan/student-management-system-java?style=flat&logo=git&logoColor=white&color=0080ff" alt="last-commit">
-<img src="https://img.shields.io/github/languages/top/mzayaan/student-management-system-java?style=flat&color=0080ff" alt="repo-top-language">
-<img src="https://img.shields.io/github/languages/count/mzayaan/student-management-system-java?style=flat&color=0080ff" alt="repo-language-count">
+## How it's put together
 
-<em>Built with the tools and technologies:</em>
+| Class | Responsibility |
+| --- | --- |
+| `StudentManagementSystem1` | Swing UI, event handling, input validation |
+| `StudentLinkedList` | Singly linked list — insert, update, delete, search, sort, file I/O |
+| `StudentLinkedList.Node` | A single record and its pointer to the next |
 
-<img src="https://img.shields.io/badge/Markdown-000000.svg?style=flat&logo=Markdown&logoColor=white" alt="Markdown">
+Sorting is implemented over the linked list itself rather than by copying into
+an array, so it works on the node chain directly.
 
-</div>
-<br>
+### The two source files
 
----
+`StudentManagementSystem1.java` is the current version and the one that gets
+built and deployed. `StudentManagementSystem.java` is an earlier, smaller
+iteration kept for reference — it has no search or sort. The two can't be
+compiled together, since both declare a top-level `StudentLinkedList`.
 
-## Table of Contents
+## Run it on your machine
 
-- [Overview](#overview)
-- [Getting Started](#getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Installation](#installation)
-    - [Usage](#usage)
-    - [Testing](#testing)
+Needs a JDK (17 or newer). No build tool, no dependencies.
 
----
-
-## Overview
-
-Student-management-system-java is a Java-based application designed to facilitate efficient management of student data through a graphical user interface. It supports core operations such as adding, updating, deleting, searching, displaying, and sorting student records, making administrative tasks straightforward and accessible.
-
-**Why student-management-system-java?**
-
-This project aims to streamline student information handling within educational environments. The core features include:
-
-- 🖥️ **Graphical User Interface:** Provides an intuitive GUI for managing student records without requiring command-line interaction.
-- 🔗 **Linked List Data Structure:** Ensures efficient in-memory data manipulation and quick access to student information.
-- 💾 **Persistent Storage:** Integrates with a structured text file (`students.txt`) to maintain data across sessions.
-- 🔍 **Search & Sort Capabilities:** Supports various search and sorting options to quickly locate and organize student data.
-- ⚙️ **Modular Design:** Facilitates easy maintenance and potential feature expansion for developers.
-
----
-
-## Getting Started
-
-### Prerequisites
-
-This project requires the following dependencies:
-
-- **Programming Language:** Java
-- **Package Manager:** Maven
-
-### Installation
-
-Build student-management-system-java from the source and install dependencies:
-
-1. **Clone the repository:**
-
-    ```sh
-    ❯ git clone https://github.com/mzayaan/student-management-system-java
-    ```
-
-2. **Navigate to the project directory:**
-
-    ```sh
-    ❯ cd student-management-system-java
-    ```
-
-3. **Install the dependencies:**
-
-**Using [maven](https://maven.apache.org/):**
-
-```sh
-❯ mvn install
-```
-**Using [maven](https://maven.apache.org/):**
-
-```sh
-❯ mvn install
+```bash
+git clone https://github.com/mzayaan/student-management-system-java
+cd student-management-system-java
+javac StudentManagementSystem1.java
+java StudentManagementSystem1
 ```
 
-### Usage
+Run it from the project directory so `students.txt` resolves.
 
-Run the project with:
+## Deployment
 
-**Using [maven](https://maven.apache.org/):**
+`.github/workflows/deploy.yml` compiles the source, packages a runnable
+`student-management.jar`, and publishes it to GitHub Pages alongside
+`web/index.html`, which boots the JAR with CheerpJ.
 
-```sh
-mvn exec:java
-```
-**Using [maven](https://maven.apache.org/):**
+The browser build rewrites one path at compile time, because relative paths
+don't resolve inside CheerpJ's virtual filesystem:
 
-```sh
-mvn exec:java
-```
+| Source | Browser build | Why |
+| --- | --- | --- |
+| `students.txt` | `/files/students.txt` | `/files/` is writable, backed by IndexedDB |
 
-### Testing
-
-Student-management-system-java uses the {__test_framework__} test framework. Run the test suite with:
-
-**Using [maven](https://maven.apache.org/):**
-
-```sh
-mvn test
-```
-**Using [maven](https://maven.apache.org/):**
-
-```sh
-mvn test
-```
-
----
-
-<div align="left"><a href="#top">⬆ Return</a></div>
-
----
+So records added in the browser persist between visits, in that browser only.
+The committed source is untouched, so the desktop version still runs unchanged.
